@@ -32,8 +32,4 @@ const _ingestLogItem = ( item ) => {
   return Logs.insert( item );
 };
 
-export const handlePreflight = _handlePreflight;
-export const authenticate    = _authenticateRequest;
-export const respond         = _handleResponse;
-export const verify          = _verifyItemContents;
-export const ingest          = _ingestLogItem;
+export { _handlePreflight as handlePreFlight, _authenticateRequest as authenticate, _handleResponse as respond, _verifyItemContents as verify, _ingestLogItem as ingest }; 

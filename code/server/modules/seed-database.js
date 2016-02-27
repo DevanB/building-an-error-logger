@@ -1,6 +1,6 @@
 import seed from 'meteor/themeteorchef:seeder';
 
-let _seedUsers = () => {
+export default const _seedUsers = () => {
   seed( 'users', {
     environments: [ 'development', 'staging', 'production' ],
     data: [{
@@ -13,7 +13,3 @@ let _seedUsers = () => {
     }]
   });
 };
-
-export default function() {
-  _seedUsers();
-}
