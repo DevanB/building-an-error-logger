@@ -204,12 +204,12 @@ const _handlePreflight = ( response ) => {
   response.end( 'Handle OPTIONS preflight.' );
 };
 
-export const handlePreflight = _handlePreflight;
+export { _handlePreflight as handlePreflight };
 ```
 
 Here, we define a method that we'll call from within our route called `_handlePreflight`. Inside, we take in the `request` value from our route and set a few things on it. What we're saying here is that we're allowing requests from any origin (meaning you can send log items from any other URL), what [HTTP Headers](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields) are accepted, what [HTTP Methods](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods) are accepted, and finally, what type of content we'll be responding with. 
 
-At the very end, we signify the end of our response with a little text message (this is non-specific and could read anything like "Handle gobiltygoop." and still work). As it stands, this is currently "stuck" in our `ingest-log-item.js` file. To make use of it, we need to `export` it from our file so that we can `import` in another file. To do that, here, we say—at the bottom of our file—`export const handlePreflight = _handlePreflight`. What this is saying is that when someone imports this file, they will be able to access our `_handlePreflight` method as the variable `handlePreflight`. What? Let's see how importing works to make sense of this.
+At the very end, we signify the end of our response with a little text message (this is non-specific and could read anything like "Handle gobiltygoop." and still work). As it stands, this is currently "stuck" in our `ingest-log-item.js` file. To make use of it, we need to `export` it from our file so that we can `import` in another file. To do that, here, we say—at the bottom of our file—`export { _handlePreflight as handlePreflight };`. What this is saying is that when someone imports this file, they will be able to access our `_handlePreflight` method as the variable `handlePreflight`. What? Let's see how importing works to make sense of this.
 
 <p class="block-header">/server/api.js</p>
 
@@ -247,9 +247,7 @@ const _handleResponse = ( response, code, message ) => {
   response.end( message );
 };
 
-export const handlePreflight = _handlePreflight;
-export const authenticate    = _authenticateRequest;
-export const respond         = _handleResponse;
+export { _handlePreflight as handlePreflight, _authenticatedRequest as authenticate, _handleResponse as respond };
 ```
 
 Same train of thought as before: define a method and export it down below. As far as what we're doing here, the first additional method we're defining is `_authenticateRequest` which is...a bit cheesy right now. Because we don't have to worry about other users accessing this API endpoint later, we're authenticating any request that has its `X-Application-ID` header value set as `123456789`. Secure! It's funny here, but if you adapt this in your own application, make sure to update this method to actually check the passed token—we'll see how this is passed in next—as a legitimate, stored value. Otherwise: uh oh.
@@ -306,8 +304,7 @@ const _ingestLogItem = ( item ) => {
 
 [...]
 
-export const verify = _verifyItemContents;
-export const ingest = _ingestLogItem;
+export { _verifyItemContents as verify, _ingestLogItem as ingest };
 ```
 
 Two methods being added. The first, `_verifyItemContents` is designed to check the log item passed to our API to ensure it has only the properties we expect and that they're assigned the appropriate types. This is very similar to Meteor's [check package](https://themeteorchef.com/snippets/using-the-check-package/), with the main difference being that `Match.test()` simply returns a boolean `true` or `false` response, while `check()` throws an error. We don't want to throw an error, here, so we rely on `Match.test()` to give us a thumbs up or down on the passed item.
